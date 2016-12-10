@@ -9,6 +9,8 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'MP3 Playground' });
 });
 
+// API Routes, respond with JSON only
+router.route('/api/')
 
 
 
