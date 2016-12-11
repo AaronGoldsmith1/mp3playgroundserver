@@ -9,6 +9,10 @@ module.exports = {
   destroy: destroy
 }
 
+//need function to show all playlists from all users?
+//seperate functions to add/remove songs from playlist?
+
+
 function index (req, res, next) {
   res.json(req.authenticatedUser.playlists);
 }
@@ -42,9 +46,7 @@ function show(req, res, next){
 
 function update(req, res, next) {
 
-      //$push, $pull songs 
-
-
+      //$push, $pull songs? or just change title/description?
 }
 
 function destroy(req, res, next){
