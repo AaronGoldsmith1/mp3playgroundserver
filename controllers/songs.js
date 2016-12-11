@@ -41,15 +41,22 @@ function show(req, res, next){
 };
 
 function update(req, res, next){
-  var song = _.find(req.authenticatedUser.songs)
+  User.findOneAndUpdate(
+    { "songs._id": req.params.id, "_id": req.authenticatedUser._id} ,
+    { "$set": {
+        "songs.$.title": req.body.title,
+        "songs.$.artist": req.body.artist
+    }},{ safe: true, new: true },
+    function(err, user){
+      if (err) return console.log(err)
+      var song = _.find(user.songs, function(o){
+        return o._id == req.params.id
+      })
+      res.json(song)
+    }
+  );
 
-  song.title = req.body.title
-  song.artist = req.body.artist
 
-  song.save(function(err, updatedSong) {
-      if(err) next(err);
-      res.json(updatedSong);
-  });
 };
 
 
