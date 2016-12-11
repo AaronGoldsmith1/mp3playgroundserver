@@ -8,7 +8,6 @@ module.exports = {
   update: update,
   destroy: destroy
 }
-// 584ca16013b298f65bc184b6
 
 function index (req, res, next) {
   res.json(req.authenticatedUser.songs);
@@ -39,12 +38,28 @@ function show(req, res, next){
   });
 
   res.json(song);
-}
+};
 
 function update(req, res, next){
+  var song = _.find(req.authenticatedUser.songs)
 
-}
+  song.title = req.body.title
+  song.artist = req.body.artist
+
+  song.save(function(err, updatedSong) {
+      if(err) next(err);
+      res.json(updatedSong);
+  });
+};
+
 
 function destroy(req, res, next){
+    var song = {artist: req.params.artist, title: req.params.title, length: 1000};
+
+    User.update(req.authenticatedUser._id, {$pull : { 'songs': song }}, { safe: true }, function(err, user) {
+      if (err) return console.log(err)
+
+      res.json(req.authenticatedUser.songs)
+    })
 
 }

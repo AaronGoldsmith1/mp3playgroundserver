@@ -5,10 +5,6 @@ module.exports = {
   authenticate: authenticate
 }
 
-
-
-
-
 function authenticate (req, res, next) {
   // Hack to mock a user
   var userData = {
