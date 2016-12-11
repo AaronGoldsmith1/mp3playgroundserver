@@ -1,5 +1,6 @@
 var User = require('../models/User');
 var _ = require('lodash');
+var mongoose = require('mongoose');
 
 module.exports = {
   index: index,
@@ -36,8 +37,11 @@ function show(req, res, next){
   function(o){
     return o._id == req.params.id
   });
-
+  if (song){
   res.json(song);
+      } else{
+  res.sendStatus(404)
+}
 };
 
 function update(req, res, next){
@@ -55,18 +59,22 @@ function update(req, res, next){
       res.json(song)
     }
   );
-
-
 };
 
 
 function destroy(req, res, next){
     var song = {artist: req.params.artist, title: req.params.title, length: 1000};
-
-    User.update(req.authenticatedUser._id, {$pull : { 'songs': song }}, { safe: true }, function(err, user) {
-      if (err) return console.log(err)
-
-      res.json(req.authenticatedUser.songs)
-    })
-
+    if (mongoose.Types.ObjectId.isValid(req.params.id)){
+      User.findOneAndUpdate(
+        { "_id": req.authenticatedUser._id} ,
+        { "$pull": {
+            "songs":  { '_id' : req.params.id}
+        }},{ safe: true },
+        function(err, user) {
+        if (err) return console.log(err)
+        res.sendStatus(204)
+      })
+    }else{
+        res.sendStatus(204)
+    }
 }
