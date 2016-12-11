@@ -45,6 +45,15 @@ function show(req, res, next){
 };
 
 function update(req, res, next) {
+  var playlist = _.find(req.authenticatedUser.playlists)
+
+  playlist.title = req.body.title
+  playlist.description = req.body.description
+
+  playlist.save(function(err, updatedPlaylist) {
+      if(err) next(err);
+      res.json(updatedPlaylist);
+  });
 
       //$push, $pull songs? or just change title/description?
 }
