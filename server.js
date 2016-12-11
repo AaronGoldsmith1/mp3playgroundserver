@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var cors = require('cors');
+var userController = require('./controllers/users')
 
 // Load env variables from .env file
 require('dotenv').config();
@@ -26,8 +27,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/api/songs', userController.authenticate)
 
-app.use('/', routes);
+app.use('/api/songs/', routes.songs);
+app.use('/', routes.other);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
