@@ -1,6 +1,7 @@
 var User = require('../models/User');
 var _ = require('lodash');
 var mongoose = require('mongoose');
+var Song = require('../models/Song')
 
 module.exports = {
   index: index,
@@ -11,13 +12,16 @@ module.exports = {
 }
 
 function index (req, res, next) {
-  res.json(req.authenticatedUser.songs);
+  Song.find({}, function(err, songs){
+    if (err) return console.log(err)
+    res.json(songs)
+  })
 }
 
 function create(req, res, next) {
-  var song = {artist: req.body.artist, title: req.body.title, length: 1000}
+  var song = {artist: req.body.artist, title: req.body.title, uploader: req.authenticatedUser._id, length: 1000}
 
-  User.findByIdAndUpdate(
+  Song.create(
     req.authenticatedUser._id,
     { $push : {'songs': song}},
     { safe: true, new: true },

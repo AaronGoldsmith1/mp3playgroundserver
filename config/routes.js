@@ -33,6 +33,23 @@ playlistsRouter.route('/:id')
       .delete(playlistController.destroy)
 
 
+  // GET /songs
+  // POST /songs
+  // PUT /songs/:id -> only by uploader
+  // DELETE /songs/:id -> only by uploader
+
+  // GET /playlists -> /playlists?user=290148729857 => /playlsits?title=AwesomeList
+  // POST /playlists
+  // GET /playlsits/:id
+  // PUT /playlists/:id
+  // DELETE /playlists/:id
+
+  // POST /playlists/:id/songs
+  // DELETE /playlist/:id/songs/:songId
+
+
+
+
 // router.route('/api/playlists')
 
 module.exports = {
