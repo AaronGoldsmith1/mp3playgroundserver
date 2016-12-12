@@ -15,12 +15,14 @@ module.exports = {
   removeSong: removeSongFromPlaylist
 }
 
+//break down into middleware
 //All playlists for all users
 //TODO: add filtering and searching methods
 function index (req, res, next) {
-  Playlist.find({}, function(err, playlists){
+  Playlist.find({}, {songs: 0}, function(err, playlists){
     if (err) return console.log(err)
-    res.json(playlists)
+
+    res.json(playlists);
   })
 }
 
