@@ -5,6 +5,7 @@ var logger         = require('morgan');
 var cookieParser   = require('cookie-parser');
 var bodyParser     = require('body-parser');
 var cors           = require('cors');
+var passport       = require('passport');
 var userController = require('./controllers/users')
 
 // Load env variables from .env file
@@ -31,7 +32,8 @@ app.use('/api/songs', userController.authenticate)
 app.use('/api/playlists', userController.authenticate)
 
 app.use('/api/songs/', routes.songs);
-app.use('/api/playlists/', routes.playlists)
+app.use('/api/playlists/', routes.playlists);
+app.use('/api/users/', routes.users);
 app.use('/', routes.other);
 
 // catch 404 and forward to error handler

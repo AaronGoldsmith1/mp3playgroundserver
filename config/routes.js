@@ -1,10 +1,11 @@
-var express = require('express');
+var express            = require('express');
 var router             = express.Router();
 var songsRouter        = express.Router();
 var playlistsRouter    = express.Router();
-var usersController    = require('../controllers/users')
-var songsController    = require('../controllers/songs')
-var playlistController = require('../controllers/playlists')
+var userRouter         = express.Router();
+var usersController    = require('../controllers/users');
+var songsController    = require('../controllers/songs');
+var playlistController = require('../controllers/playlists');
 
 
 /* GET home page. */
@@ -38,24 +39,32 @@ playlistsRouter.route('/:id/songs')
 playlistsRouter.route('/:id/songs/:songId')
       .delete(playlistController.removeSong)
 
-  // GET /songs
-  // POST /songs
-  // PUT /songs/:id -> only by uploader
-  // DELETE /songs/:id -> only by uploader
+userRouter.route('/signup')
+      .get(usersController.getSignup)
+      .post(usersController.postSignup)
 
-  // GET /playlists -> /playlists?user=290148729857 => /playlsits?title=AwesomeList
-  // POST /playlists/:id/songs
-  // DELETE /playlist/:id/songs/:songId
+userRouter.route('/login')
+      .get(usersController.getLogin)
+      .post(usersController.postLogin)
+
+userRouter.route('/logout')
+      .get(usersController.getLogout)
+
+
+
+
+
 
   // GET /users/:id/playlists
 
 
 
 
-// router.route('/api/playlists')
+
 
 module.exports = {
   songs : songsRouter,
   playlists: playlistsRouter,
+  users: usersRouter,
   other: router
 };

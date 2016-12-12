@@ -12,3 +12,7 @@ var userSchema = new mongoose.Schema({
 var User = mongoose.model('User', userSchema);
 
 module.exports = User;
+
+User.methods.encrypt = function(password) {
+   return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+ };

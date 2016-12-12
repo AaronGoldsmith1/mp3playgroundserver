@@ -1,9 +1,28 @@
-var User = require('../models/User');
+var User     = require('../models/User');
+var passport = require('passport');
 
+// GET /signup
+function getSignup(request, response) {
+}
 
+// POST /signup
+function postSignup(request, response) {
+}
 
-module.exports = {
-  authenticate: authenticate
+// GET /login
+function getLogin(request, response) {
+}
+
+// POST /login
+function postLogin(request, response) {
+}
+
+// GET /logout
+function getLogout(request, response) {
+}
+
+// Restricted page
+function secret(request, response){
 }
 
 function authenticate (req, res, next) {
@@ -26,6 +45,16 @@ function authenticate (req, res, next) {
       // User exists
       req.authenticatedUser = user;
       next();
-    }
-  })
+    };
+  });
+};
+
+module.exports = {
+  authenticate: authenticate,
+  getLogin: getLogin,
+  postLogin: postLogin ,
+  getSignup: getSignup,
+  postSignup: postSignup,
+  getLogout: getLogout,
+  secret: secret
 }
