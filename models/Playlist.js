@@ -8,6 +8,13 @@ var playlistSchema = new mongoose.Schema({
   owner: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true}
 })
 
+playlistSchema.set("toJSON", {
+  transform: function(doc, ret, options){
+    console.log(options)
+    delete ret.songs
+    return ret
+  }
+})
 
 var Playlist = mongoose.model('Playlist', playlistSchema)
 

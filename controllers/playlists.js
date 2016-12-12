@@ -34,15 +34,17 @@ function create(req, res, next) {
 }
 
 function show(req, res, next){
-  Playlist.findById(req.params.id, function(err, playlist){
-    if (err) return console.log(err)
-    if (!playlist){
-      res.sendStatus(404)
-    } else {
-      res.json(playlist)
-    }
-  })
-};
+  Playlist.findById(req.params.id)
+          .populate("songs")
+          .exec(function(err, playlist){
+            if (err) return console.log(err)
+            if (!playlist){
+              res.sendStatus(404)
+            } else {
+              res.json(playlist)
+            }
+          })
+        };
 
 
 function update(req, res, next) {
