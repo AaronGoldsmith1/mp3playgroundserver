@@ -1,6 +1,8 @@
 var User = require('../models/User');
-var Playlist = require('../models/Playlist')
+var Playlist = require('../models/Playlist');
+var Song = require('../models/Song');
 var _ = require('lodash');
+var mongoose = require('mongoose')
 
 
 module.exports = {
@@ -8,7 +10,9 @@ module.exports = {
   create: create,
   show: show,
   update: update,
-  destroy: destroy
+  destroy: destroy,
+  addSong: addSongToPlaylist,
+  removeSong: removeSongFromPlaylist
 }
 
 //All playlists for all users
@@ -60,6 +64,59 @@ function update(req, res, next) {
     })
   })
 }
+
+function addSongToPlaylist(req, res, next){
+    Playlist.findById(req.params.id, function(err, playlist){
+      if (err) return console.log(err)
+      if (!playlist) {
+        return res.sendStatus(404)
+      }
+
+      if (playlist.owner.toString() != req.authenticatedUser._id){
+        return res.status(401).json({error: "Unauthorized!"})
+      }
+
+      if(!mongoose.Types.ObjectId.isValid(req.body.songId)){
+        return res.status(422).json({error: "Invalid Id"})
+      }
+
+      var mongoId = new mongoose.Types.ObjectId(req.body.songId);
+
+      Song.count({ _id: mongoId }, function(err, count){
+        if (err) return console.log(err)
+        if (count == 0) {
+          return res.send(422).json({error: "Song not found!"})
+        }
+        playlist.songs.push(req.body.songId)
+        playlist.save(function(err, playlist){
+          if (err) return console.log(err)
+          res.json(playlist)
+        })
+      })
+
+    })
+
+}
+
+function removeSongFromPlaylist(req, res, next){
+  Playlist.findById(req.params.id, function(err, playlist){
+    if (err) return console.log(err)
+    if (!playlist) {
+      return res.sendStatus(404)
+    }
+    if (playlist.owner.toString() != req.authenticatedUser._id){
+      return res.status(401).json({error: "Unauthorized!"})
+    }
+
+    playlist.songs = _.remove(playlist.songs, req.params.songId);
+
+    playlist.save({new: true, safe: true}, function(err, playlist){
+      if (err) return console.log(err)
+      res.json(playlist)
+    })
+  })
+}
+
 
 function destroy(req, res, next){
   Playlist.findById(req.params.id, function(err, playlist){

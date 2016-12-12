@@ -32,6 +32,11 @@ playlistsRouter.route('/:id')
       .put(playlistController.update)
       .delete(playlistController.destroy)
 
+playlistsRouter.route('/:id/songs')
+      .post(playlistController.addSong)
+
+playlistsRouter.route('/:id/songs/:songId')
+      .delete(playlistController.removeSong)
 
   // GET /songs
   // POST /songs
@@ -39,13 +44,10 @@ playlistsRouter.route('/:id')
   // DELETE /songs/:id -> only by uploader
 
   // GET /playlists -> /playlists?user=290148729857 => /playlsits?title=AwesomeList
-  // POST /playlists
-  // GET /playlsits/:id
-  // PUT /playlists/:id
-  // DELETE /playlists/:id
-
   // POST /playlists/:id/songs
   // DELETE /playlist/:id/songs/:songId
+
+  // GET /users/:id/playlists
 
 
 
