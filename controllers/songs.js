@@ -22,7 +22,7 @@ function create(req, res, next) {
   var song = {artist: req.body.artist, title: req.body.title, uploader: req.authenticatedUser._id, length: 1000}
 
   Song.create(song, function(err, song) {
-      if (err) console.log(err)
+      if (err) return console.log(err)
       res.json(song)
   })
     // req.authenticatedUser._id,

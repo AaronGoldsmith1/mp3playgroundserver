@@ -1,5 +1,7 @@
 var User = require('../models/User');
+var Playlist = require('../models/Playlist')
 var _ = require('lodash');
+
 
 module.exports = {
   index: index,
@@ -9,63 +11,65 @@ module.exports = {
   destroy: destroy
 }
 
-//need function to show all playlists from all users?
-//seperate functions to add/remove songs from playlist?
-
-
+//All playlists for all users
+//TODO: add filtering and searching methods
 function index (req, res, next) {
-  res.json(req.authenticatedUser.playlists);
+  Playlist.find({}, function(err, playlists){
+    if (err) return console.log(err)
+    res.json(playlists)
+  })
 }
 
 function create(req, res, next) {
-  var playlist = {title: req.body.title, description: req.body.description, songs: []}
+  var playlistData = { title: req.body.title, description: req.body.description, owner: req.authenticatedUser._id}
 
-  User.findByIdAndUpdate(
-    req.authenticatedUser._id,
-    { $push : {'playlists': playlist}},
-    { safe: true, new: true },
-    function(err, user){
-      if (err) return console.log(err)
-
-      var newPlaylist = _.find(user.playlists, playlist);
-
-      res.json(newPlaylist);
-    });
+  Playlist.create(playlistData, function(err, playlist){
+    if (err) return console.log(err)
+    res.json(playlist)
+  })
 }
 
 function show(req, res, next){
-  console.log("Playlists::show", req.params.id)
-  var playlist = _.find(req.authenticatedUser.playlists,
-
-  function(o){
-    return o._id == req.params.id
-  });
-
-  res.json(playlist);
+  Playlist.findById(req.params.id, function(err, playlist){
+    if (err) return console.log(err)
+    if (!playlist){
+      res.sendStatus(404)
+    } else {
+      res.json(playlist)
+    }
+  })
 };
 
+
 function update(req, res, next) {
-  var playlist = _.find(req.authenticatedUser.playlists)
+  Playlist.findById(req.params.id,
+  function(err, playlist){
+    if (err) return console.log(err)
 
-  playlist.title = req.body.title
-  playlist.description = req.body.description
+    console.log(playlist.owner + "!=" + req.authenticatedUser._id)
+    console.log(playlist.owner != req.authenticatedUser._id)
+    if (playlist.owner.toString() != req.authenticatedUser._id){
+      return res.status(401).json({error: "Unauthorized!"})
+    }
 
-  playlist.save(function(err, updatedPlaylist) {
-      if(err) next(err);
-      res.json(updatedPlaylist);
-  });
-
-      //$push, $pull songs? or just change title/description?
+    playlist.title = req.body.title;
+    playlist.description = req.body.description;
+    playlist.save({new: true, safe: true}, function(err, playlist){
+      if (err) return console.log(err)
+      res.json(playlist)
+    })
+  })
 }
 
 function destroy(req, res, next){
-    var playlist = {title: req.params.title, description: req.params.description, songs: req.params.songs}
-
-
-    User.update(req.authenticatedUser._id, {$pull : { 'playlists': playlist }}, { safe: true }, function(err, user) {
+  Playlist.findById(req.params.id, function(err, playlist){
+    if (err) return console.log(err)
+    if (playlist.owner.toString() != req.authenticatedUser._id){
+      return res.status(401).json({error: "Unauthorized!"})
+    }
+    playlist.remove(function(err){
       if (err) return console.log(err)
-
-      res.json(req.authenticatedUser.playlists)
+      res.sendStatus(204)
     })
-
+  })
 }

@@ -28,8 +28,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/songs', userController.authenticate)
+app.use('/api/playlists', userController.authenticate)
 
 app.use('/api/songs/', routes.songs);
+app.use('/api/playlists/', routes.playlists)
 app.use('/', routes.other);
 
 // catch 404 and forward to error handler
