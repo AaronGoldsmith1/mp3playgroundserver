@@ -6,6 +6,7 @@ var userRouter         = express.Router();
 var usersController    = require('../controllers/users');
 var songsController    = require('../controllers/songs');
 var playlistController = require('../controllers/playlists');
+var token              = require('./token_auth');
 
 
 /* GET home page. */
@@ -50,9 +51,14 @@ userRouter.route('/login')
 userRouter.route('/logout')
       .get(usersController.getLogout)
 
+userRouter.route('/')
+      .post(usersController.create)
 
+router.route('/api/token')
+        .post(token.create)
 
-
+router.route('/api/me')
+        .get(token.authenticate, usersController.me)
 
 
   // GET /users/:id/playlists
