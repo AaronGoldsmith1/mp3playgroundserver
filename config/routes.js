@@ -2,13 +2,13 @@ var express                = require('express');
 var router                 = express.Router();
 var songsRouter            = express.Router();
 var playlistsRouter        = express.Router();
-var usersRouter             = express.Router();
+var usersRouter            = express.Router();
 var authenticateRouter     = express.Router();
-var usersController    = require('../controllers/users');
-var songsController    = require('../controllers/songs');
-var playlistController = require('../controllers/playlists');
+var usersController        = require('../controllers/users');
+var songsController        = require('../controllers/songs');
+var playlistController     = require('../controllers/playlists');
 var authenticateController = require ('../controllers/authenticate.js');
-var token              = require('./token_auth');
+var token                  = require('./token_auth');
 
 
 /* GET home page. */

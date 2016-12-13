@@ -1,7 +1,7 @@
-var User = require('../models/User');
+var User     = require('../models/User');
 var Playlist = require('../models/Playlist');
-var Song = require('../models/Song');
-var _ = require('lodash');
+var Song     = require('../models/Song');
+var _        = require('lodash');
 var mongoose = require('mongoose')
 
 
