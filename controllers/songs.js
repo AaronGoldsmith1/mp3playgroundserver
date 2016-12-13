@@ -1,18 +1,20 @@
-var User = require('../models/User');
-var _ = require('lodash');
-var mongoose = require('mongoose');
-var Song = require('../models/Song');
-var AWS      = require('aws-sdk'),
-var s3       = require('s3');
-var client = s3.createClient({
-  maxAsyncS3: 20,     // this is the default
-  s3RetryCount: 3,    // this is the default
-  s3RetryDelay: 1000, // this is the default
+var User        = require('../models/User');
+var _           = require('lodash');
+var mongoose    = require('mongoose');
+var Song        = require('../models/Song');
+var mp3Duration = require('mp3-duration');
+var ID3         = require('id3-parser');
+var AWS         = require('aws-sdk');
+var s3          = require('s3');
+var client      = s3.createClient({
+  maxAsyncS3:               20,     // this is the default
+  s3RetryCount:             3,    // this is the default
+  s3RetryDelay:             1000, // this is the default
   multipartUploadThreshold: 20971520, // this is the default (20 MB)
-  multipartUploadSize: 15728640, // this is the default (15 MB)
+  multipartUploadSize:      15728640, // this is the default (15 MB)
   s3Options: {
-    accessKeyId: BUCKET_ID,
-    secretAccessKey: BUCKET_KEY
+    accessKeyId:            process.env.BUCKET_ID,
+    secretAccessKey:        process.env.BUCKET_KEY
     // any other options are passed to new AWS.S3()
     // See: http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/Config.html#constructor-property
   },
@@ -42,7 +44,7 @@ function create(req, res, next) {
   })
 
   var params = {
-    localFile = req.body.localAddress,
+    localFile: req.body.localAddress,
     s3Params: {
       Bucket: "mp3playground",
       Key: req.body.title
@@ -131,7 +133,7 @@ function destroy(req, res, next){
   })
 
   var params = {
-    localFile = req.params.localAddress,
+    localFile: req.params.localAddress,
     s3Params: {
       Bucket: "mp3playground",
       Key: req.params.title

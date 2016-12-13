@@ -42,10 +42,6 @@ app.use('/api/playlists/', routes.playlists);
 app.use('/api/users/', routes.users);
 app.use('/', routes.other);
 
-
-
-
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
