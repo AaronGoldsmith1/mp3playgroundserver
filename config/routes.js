@@ -1,11 +1,13 @@
-var express            = require('express');
-var router             = express.Router();
-var songsRouter        = express.Router();
-var playlistsRouter    = express.Router();
-var userRouter         = express.Router();
+var express                = require('express');
+var router                 = express.Router();
+var songsRouter            = express.Router();
+var playlistsRouter        = express.Router();
+var usersRouter             = express.Router();
+var authenticateRouter     = express.Router();
 var usersController    = require('../controllers/users');
 var songsController    = require('../controllers/songs');
 var playlistController = require('../controllers/playlists');
+var authenticateController = require ('../controllers/authenticate.js');
 var token              = require('./token_auth');
 
 
@@ -40,37 +42,23 @@ playlistsRouter.route('/:id/songs')
 playlistsRouter.route('/:id/songs/:songId')
       .delete(playlistController.removeSong)
 
-userRouter.route('/signup')
-      .get(usersController.getSignup)
-      .post(usersController.postSignup)
-
-userRouter.route('/login')
-      .get(usersController.getLogin)
-      .post(usersController.postLogin)
-
-userRouter.route('/logout')
-      .get(usersController.getLogout)
-
-userRouter.route('/')
+router.route('/api/signup')
       .post(usersController.create)
 
-router.route('/api/token')
-        .post(token.create)
+authenticateRouter.route('/')
+    .post(authenticateController.login)
 
-router.route('/api/me')
-        .get(token.authenticate, usersController.me)
+authenticateRouter.route('/logout')
+      .get(authenticateController.logout)
 
-
-  // GET /users/:id/playlists
-
-
-
-
+usersRouter.route('/me')
+      .get(usersController.me)
 
 
 module.exports = {
-  songs : songsRouter,
-  playlists: playlistsRouter,
-  users: usersRouter,
+  songs:        songsRouter,
+  playlists:    playlistsRouter,
+  authenticate: authenticateRouter,
+  users:        usersRouter,
   other: router
 };

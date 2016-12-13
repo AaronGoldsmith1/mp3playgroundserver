@@ -7,6 +7,7 @@ var bodyParser     = require('body-parser');
 var cors           = require('cors');
 var passport       = require('passport');
 var userController = require('./controllers/users')
+var authenticateController = require('./controllers/authenticate')
 
 // Load env variables from .env file
 require('dotenv').config();
@@ -28,10 +29,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/api/users', userController.authenticate)
-app.use('/api/songs', userController.authenticate)
-app.use('/api/playlists', userController.authenticate)
 
+//Auth middleware
+app.use('/api/users', authenticateController.authenticate)
+app.use('/api/songs', authenticateController.authenticate)
+app.use('/api/playlists', authenticateController.authenticate)
+
+// Routes
+app.use('/api/authenticate', routes.authenticate);
 app.use('/api/songs/', routes.songs);
 app.use('/api/playlists/', routes.playlists);
 app.use('/api/users/', routes.users);
@@ -42,7 +47,7 @@ app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
-});
+})
 
 // error handlers
 
