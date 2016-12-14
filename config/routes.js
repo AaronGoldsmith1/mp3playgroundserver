@@ -54,6 +54,7 @@ authenticateRouter.route('/logout')
 usersRouter.route('/me')
       .get(usersController.me)
 
+router.get('/sign-s3', songsController.signS3)
 
 module.exports = {
   songs:        songsRouter,

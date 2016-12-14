@@ -6,12 +6,12 @@ var mongoose = require('mongoose')
 
 
 module.exports = {
-  index: index,
-  create: create,
-  show: show,
-  update: update,
-  destroy: destroy,
-  addSong: addSongToPlaylist,
+  index:      index,
+  create:     create,
+  show:       show,
+  update:     update,
+  destroy:    destroy,
+  addSong:    addSongToPlaylist,
   removeSong: removeSongFromPlaylist
 }
 
