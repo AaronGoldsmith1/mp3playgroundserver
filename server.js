@@ -16,7 +16,7 @@ var routes = require('./config/routes');
 var mongoose = require('./config/database');
 
 var app = express();
-app.use(bodyParser({limit: "50mb"}))
+//app.use(bodyParser({limit: "50mb"}))
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
