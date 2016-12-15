@@ -19,7 +19,7 @@ module.exports = {
 //All playlists for all users
 //TODO: add filtering and searching methods
 function index (req, res, next) {
-  Playlist.find({}, {songs: 0}, function(err, playlists){
+  Playlist.find({ owner: req.authenticatedUser._id}, {songs: 0}, function(err, playlists){
     if (err) return console.log(err)
 
     res.json(playlists);
@@ -28,6 +28,8 @@ function index (req, res, next) {
 
 function create(req, res, next) {
   var playlistData = { title: req.body.title, description: req.body.description, owner: req.authenticatedUser._id}
+
+  console.log(req)
 
   Playlist.create(playlistData, function(err, playlist){
     if (err) return console.log(err)
@@ -76,6 +78,7 @@ function addSongToPlaylist(req, res, next){
         return res.sendStatus(404)
       }
 
+      console.log(playlist.owner.toString() + "!=" + req.authenticatedUser._id)
       if (playlist.owner.toString() != req.authenticatedUser._id){
         return res.status(401).json({error: "Unauthorized!"})
       }

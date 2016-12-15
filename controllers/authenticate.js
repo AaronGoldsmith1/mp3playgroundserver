@@ -21,9 +21,9 @@ function login(req, res, next) {
     if(!verified) return res.json({success: false, message: "email and/or passowrd incorrect!"});
 
 
-    var token = jwt.sign(_.pick(user, ["_id", "email", "name"]), process.env.TOKEN_SECRET, {expiresIn: 60 * 5})
+    var token = jwt.sign(_.pick(user, ["_id", "email", "name"]), process.env.TOKEN_SECRET, {expiresIn: '24h'})
 
-    res.json({success: true, message: "Successfully authenticated user", token: token})
+    res.json({success: true, message: "Successfully authenticated user", token: token, user: user})
 
   })
 }
@@ -52,7 +52,7 @@ function authenticate(req, res, next) {
     return res.status(401).json({success: false, message:"Authorization: Bearer [token]"})
   }
 
-  console.log(token);
+  console.log(req.body);
   jwt.verify(token, process.env.TOKEN_SECRET, function(err, user){
     if (err) return res.json({success: false, message: err})
     req.authenticatedUser = user
