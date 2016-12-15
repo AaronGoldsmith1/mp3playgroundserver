@@ -3,11 +3,9 @@ var router                 = express.Router();
 var songsRouter            = express.Router();
 var playlistsRouter        = express.Router();
 var usersRouter            = express.Router();
-var authenticateRouter     = express.Router();
 var usersController        = require('../controllers/users');
 var songsController        = require('../controllers/songs');
 var playlistController     = require('../controllers/playlists');
-var authenticateController = require ('../controllers/authenticate.js');
 var token                  = require('./token_auth');
 
 /* GET home page. */
@@ -24,7 +22,7 @@ songsRouter.route('/')
 songsRouter.route('/:id')
       .get(songsController.show)
       .put(songsController.update)
-      .delete(songsController.destroy)
+      .delete(token.authenticate, songsController.destroy) //have to be logged w/ token to delete
 
 playlistsRouter.route('/')
       .get(playlistController.index)
@@ -41,24 +39,20 @@ playlistsRouter.route('/:id/songs')
 playlistsRouter.route('/:id/songs/:songId')
       .delete(playlistController.removeSong)
 
-router.route('/api/signup')
+usersRouter.route('/')
       .post(usersController.create)
 
-authenticateRouter.route('/')
-    .post(authenticateController.login)
-
-authenticateRouter.route('/logout')
-      .get(authenticateController.logout)
+router.route('/api/token') //handles sign in
+      .post(token.create)
 
 usersRouter.route('/me')
-      .get(usersController.me)
+      .get(token.authenticate, usersController.me)
 
 router.get('/sign-s3', songsController.signS3)
 
 module.exports = {
   songs:        songsRouter,
   playlists:    playlistsRouter,
-  authenticate: authenticateRouter,
   users:        usersRouter,
   other:        router
 };

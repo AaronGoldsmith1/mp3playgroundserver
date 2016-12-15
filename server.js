@@ -6,8 +6,7 @@ var cookieParser           = require('cookie-parser');
 var bodyParser             = require('body-parser');
 var cors                   = require('cors');
 var passport               = require('passport');
-var userController         = require('./controllers/users');
-var authenticateController = require('./controllers/authenticate');
+
 
 // Load env variables from .env file
 require('dotenv').config();
@@ -22,6 +21,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(cors());
@@ -31,17 +31,16 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-//Auth middleware
-app.use('/api/users', authenticateController.authenticate)
-app.use('/api/songs', authenticateController.authenticate)
-app.use('/api/playlists', authenticateController.authenticate)
+app.use(validateContentType);
+
 
 // Routes
-app.use('/api/authenticate', routes.authenticate);
-app.use('/api/songs/', routes.songs);
-app.use('/api/playlists/', routes.playlists);
-app.use('/api/users/', routes.users);
+app.use('/api/songs', routes.songs);
+app.use('/api/playlists', routes.playlists);
+app.use('/api/users', routes.users);
 app.use('/', routes.other);
+
+app.use(addFailedAuthHeader);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

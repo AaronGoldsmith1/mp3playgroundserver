@@ -8,11 +8,11 @@ var userSchema = new mongoose.Schema({
  email:     {type: String, required: true},
  googleId:  {type: String, required: false},
  twitterId: {type: String, required: false},
- password:  {type: String, required: true},
  playlists: [{type: mongoose.Schema.Types.ObjectId, ref: 'Playlist'}]
 })
 
 // add bcrypt hashing to model (works on a password field)!
+// adds password digest
 userSchema.plugin(require('mongoose-bcrypt'));
 
 userSchema.options.toJSON = {
