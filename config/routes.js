@@ -10,7 +10,6 @@ var playlistController     = require('../controllers/playlists');
 var authenticateController = require ('../controllers/authenticate.js');
 var token                  = require('./token_auth');
 
-
 /* GET home page. */
 // API Documentation Landing Page
 router.get('/', function(req, res, next) {
@@ -61,5 +60,5 @@ module.exports = {
   playlists:    playlistsRouter,
   authenticate: authenticateRouter,
   users:        usersRouter,
-  other: router
+  other:        router
 };

@@ -22,7 +22,7 @@
     "moment": "^2.17.1",
     "mongoose": "^4.7.2",
     "mongoose-bcrypt": "^1.4.2",
-    "morgan": "~1.7.0",
+    "morgan": "^1.7.0",
     "mp3-duration": "^1.0.10",
     "passport": "^0.3.2",
     "passport-jwt": "^2.2.1",

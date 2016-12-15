@@ -1,10 +1,10 @@
 var User = require('../models/User');
-var jwt = require('jsonwebtoken');
-var _ = require('lodash');
+var jwt  = require('jsonwebtoken');
+var _    = require('lodash');
 
 module.exports = {
-  login: login,
-  logout: logout,
+  login:        login,
+  logout:       logout,
   authenticate: authenticate
 }
 

@@ -3,14 +3,12 @@ var passport      = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var Schema        = mongoose.Schema;
 
-
-
 var userSchema = new mongoose.Schema({
- name: {type: String, required: true },
- email: {type: String, required: true},
- googleId: {type: String, required: false},
+ name:      {type: String, required: true},
+ email:     {type: String, required: true},
+ googleId:  {type: String, required: false},
  twitterId: {type: String, required: false},
- password: {type: String, required: true},
+ password:  {type: String, required: true},
  playlists: [{type: mongoose.Schema.Types.ObjectId, ref: 'Playlist'}]
 })
 
