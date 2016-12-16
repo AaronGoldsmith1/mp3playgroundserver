@@ -55,7 +55,7 @@ function create(req, res, next) {
   //mysong.artist
   //mysong.title
 
-  var song = {artist: req.body.artist, title: req.body.title, uploader: req.authenticatedUser._id, url: req.body.url, length: 1000}
+  var song = {artist: req.body.artist, title: req.body.title, uploader: req.decoded._id, url: req.body.url, length: 1000}
   Song.create(song, function(err, song) {
       if (err) return console.log(err)
       res.json(song)

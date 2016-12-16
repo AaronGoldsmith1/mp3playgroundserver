@@ -19,7 +19,7 @@ module.exports = {
 //All playlists for all users
 //TODO: add filtering and searching methods
 function index (req, res, next) {
-  Playlist.find({ owner: req.authenticatedUser._id}, {songs: 0}, function(err, playlists){
+  Playlist.find({ owner: req.decoded._id}, {songs: 0}, function(err, playlists){
     if (err) return console.log(err)
 
     res.json(playlists);
@@ -27,7 +27,7 @@ function index (req, res, next) {
 }
 
 function create(req, res, next) {
-  var playlistData = { title: req.body.title, description: req.body.description, owner: req.authenticatedUser._id}
+  var playlistData = { title: req.body.title, description: req.body.description, owner: req.decoded._id}
 
   console.log(req)
 
@@ -56,9 +56,9 @@ function update(req, res, next) {
   function(err, playlist){
     if (err) return console.log(err)
 
-    console.log(playlist.owner + "!=" + req.authenticatedUser._id)
-    console.log(playlist.owner != req.authenticatedUser._id)
-    if (playlist.owner.toString() != req.authenticatedUser._id){
+    console.log(playlist.owner + "!=" + req.decoded._id)
+    console.log(playlist.owner != req.decoded._id)
+    if (playlist.owner.toString() != req.decoded._id){
       return res.status(401).json({error: "Unauthorized!"})
     }
 
@@ -78,8 +78,8 @@ function addSongToPlaylist(req, res, next){
         return res.sendStatus(404)
       }
 
-      console.log(playlist.owner.toString() + "!=" + req.authenticatedUser._id)
-      if (playlist.owner.toString() != req.authenticatedUser._id){
+      console.log(playlist.owner.toString() + "!=" + req.decoded._id)
+      if (playlist.owner.toString() != req.decoded._id){
         return res.status(401).json({error: "Unauthorized!"})
       }
 
@@ -111,7 +111,7 @@ function removeSongFromPlaylist(req, res, next){
     if (!playlist) {
       return res.sendStatus(404)
     }
-    if (playlist.owner.toString() != req.authenticatedUser._id){
+    if (playlist.owner.toString() != req.decoded._id){
       return res.status(401).json({error: "Unauthorized!"})
     }
 
@@ -128,7 +128,7 @@ function removeSongFromPlaylist(req, res, next){
 function destroy(req, res, next){
   Playlist.findById(req.params.id, function(err, playlist){
     if (err) return console.log(err)
-    if (playlist.owner.toString() != req.authenticatedUser._id){
+    if (playlist.owner.toString() != req.decoded._id){
       return res.status(401).json({error: "Unauthorized!"})
     }
     playlist.remove(function(err){

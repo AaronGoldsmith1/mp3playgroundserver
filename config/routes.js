@@ -17,7 +17,7 @@ router.get('/', function(req, res, next) {
 // API Routes, respond with JSON only
 songsRouter.route('/')
       .get(songsController.index)
-      .post(songsController.create)
+      .post(token.authenticate, songsController.create)
 
 songsRouter.route('/:id')
       .get(songsController.show)
@@ -25,8 +25,8 @@ songsRouter.route('/:id')
       .delete(token.authenticate, songsController.destroy) //have to be logged w/ token to delete
 
 playlistsRouter.route('/')
-      .get(playlistController.index)
-      .post(playlistController.create)
+      .get(token.authenticate, playlistController.index)
+      .post(token.authenticate, playlistController.create)
 
 playlistsRouter.route('/:id')
       .get(playlistController.show)
@@ -34,7 +34,7 @@ playlistsRouter.route('/:id')
       .delete(playlistController.destroy)
 
 playlistsRouter.route('/:id/songs')
-      .post(playlistController.addSong)
+      .post(token.authenticate, playlistController.addSong)
 
 playlistsRouter.route('/:id/songs/:songId')
       .delete(playlistController.removeSong)

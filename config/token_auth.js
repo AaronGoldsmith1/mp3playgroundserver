@@ -92,6 +92,7 @@ var User = require('../models/User');
 
    verifyJwtAndHandleErrors(token, next, function(decoded) {
      req.decoded = decoded;
+     console.log(decoded);
      next();
    });
  }
