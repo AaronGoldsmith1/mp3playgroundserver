@@ -24,6 +24,7 @@
     "mongoose-bcrypt": "^1.4.2",
     "morgan": "^1.7.0",
     "mp3-duration": "^1.0.10",
+    "musicmetadata": "^2.0.5",
     "passport": "^0.3.2",
     "passport-jwt": "^2.2.1",
     "passport-local": "^1.0.0",

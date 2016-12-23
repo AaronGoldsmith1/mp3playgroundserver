@@ -3,8 +3,10 @@ var _           = require('lodash');
 var mongoose    = require('mongoose');
 var Song        = require('../models/Song');
 var mp3Duration = require('mp3-duration');
-var ID3         = require('id3-parser');
 var aws         = require('aws-sdk');
+var mm          = require('musicmetadata');
+var fs          = require('fs');
+var S3_BUCKET = "mp3playground";
 
 module.exports = {
   index:   index,
@@ -24,7 +26,7 @@ function index (req, res, next) {
 
 function signS3(req, res, next){
   var s3 = new aws.S3();
-  var S3_BUCKET = "mp3playground"
+
   var fileName = req.query['file-name']
   var fileType = req.query['file-type']
 
@@ -51,15 +53,38 @@ function signS3(req, res, next){
 
 
 function create(req, res, next) {
-  //var mySong = ID3.parse()
-  //mysong.artist
-  //mysong.title
 
-  var song = {artist: req.body.artist, title: req.body.title, uploader: req.decoded._id, url: req.body.url, length: 1000}
-  Song.create(song, function(err, song) {
+/*
+  var file = fs.createWriteStream("test.mp4");
+  file.on("close", function(){
+    console.log("write Stream Closed")
+  });
+*/
+  var s3 = new aws.S3();
+  const s3Params = {
+    Bucket: S3_BUCKET,
+    Key: req.body.s3_key};
+
+  var s3Stream = s3.getObject(s3Params).createReadStream()
+  var parser = mm(s3Stream, function (err, metadata) {
+    if (err) return console.log(err);
+
+    var song = {
+      artist: req.body.artist || metadata.artist.join(', '),
+      title: req.body.title || metadata.title,
+      uploader: req.decoded._id,
+      url: req.body.url,
+      length: 1000
+    };
+
+    console.log(metadata);
+    //res.json(metadata);
+
+    Song.create(song, function(err, song) {
       if (err) return console.log(err)
       res.json(song)
-  })
+    })
+  });
 }
 
 function show(req, res, next){
