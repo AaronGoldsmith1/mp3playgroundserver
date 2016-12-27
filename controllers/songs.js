@@ -74,6 +74,7 @@ function create(req, res, next) {
       title: req.body.title || metadata.title,
       uploader: req.decoded._id,
       url: req.body.url,
+      s3_key: req.body.s3_key,
       length: 1000
     };
 
@@ -111,27 +112,23 @@ function update(req, res, next){
 function destroy(req, res, next){
   Song.findById(req.params.id, function(err, song){
     if (err) return console.log(err)
-    res.sendStatus(204)
 
-    var params = {
-      localFile: req.params.localAddress,
-      s3Params: {
-        Bucket: "mp3playground",
-        Key: req.params.title
-      }
+
+    var s3Params = {
+      Bucket: "mp3playground",
+      Key: song.s3_key
     }
-    var uploader = s3.deleteObjects(params);
-      uploader.on('error', function(err) {
-      console.error("unable to delete:", err.stack);
-        });
-      uploader.on('progress', function() {
-      console.log("progress", uploader.progressMd5Amount, uploader.progressAmount, uploader.progressTotal);
-        });
-      uploader.on('end', function() {
-      console.log("done deleting");
-      });
-
-
+    s3.deleteObject(s3Params, function(err, data){
+      if (err) return console.log(err)
+      song.remove(function(err, song){
+        if (err) return console.log(err);
+        console.log("deleted Song")
+        console.log(song)
+        res.sendStatus(204)
+      })
+    });
   })
+
+
 
 }

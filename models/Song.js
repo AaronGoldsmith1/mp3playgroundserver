@@ -5,8 +5,8 @@ var songSchema = new mongoose.Schema({
   artist:       {type: String, required: true},
   title:        {type: String, required: true},
   length:       {type: Number, required: true},
-  localAddress: {type: String, required: false},
   url:          {type: String, required: true},
+  s3_key:       {type: String, required: true},
   uploader:     {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true}
 })
 

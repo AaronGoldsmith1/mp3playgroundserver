@@ -111,6 +111,9 @@ function removeSongFromPlaylist(req, res, next){
     if (!playlist) {
       return res.sendStatus(404)
     }
+
+    console.log(req.decoded)
+
     if (playlist.owner.toString() != req.decoded._id){
       return res.status(401).json({error: "Unauthorized!"})
     }

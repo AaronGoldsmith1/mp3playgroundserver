@@ -21,7 +21,7 @@ songsRouter.route('/')
 
 songsRouter.route('/:id')
       .get(songsController.show)
-      .put(songsController.update)
+      .put(token.authenticate, songsController.update)
       .delete(token.authenticate, songsController.destroy) //have to be logged w/ token to delete
 
 playlistsRouter.route('/')
@@ -30,14 +30,14 @@ playlistsRouter.route('/')
 
 playlistsRouter.route('/:id')
       .get(playlistController.show)
-      .put(playlistController.update)
-      .delete(playlistController.destroy)
+      .put(token.authenticate, playlistController.update)
+      .delete(token.authenticate, playlistController.destroy)
 
 playlistsRouter.route('/:id/songs')
       .post(token.authenticate, playlistController.addSong)
 
 playlistsRouter.route('/:id/songs/:songId')
-      .delete(playlistController.removeSong)
+      .delete(token.authenticate, playlistController.removeSong)
 
 usersRouter.route('/')
       .post(usersController.create)
