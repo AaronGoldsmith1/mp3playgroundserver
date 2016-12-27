@@ -6,7 +6,9 @@ var mp3Duration = require('mp3-duration');
 var aws         = require('aws-sdk');
 var mm          = require('musicmetadata');
 var fs          = require('fs');
-var S3_BUCKET = "mp3playground";
+var S3_BUCKET   = "mp3playground";
+var s3          = new aws.S3();
+
 
 module.exports = {
   index:   index,
@@ -25,7 +27,6 @@ function index (req, res, next) {
 }
 
 function signS3(req, res, next){
-  var s3 = new aws.S3();
 
   var fileName = req.query['file-name']
   var fileType = req.query['file-type']
@@ -60,7 +61,6 @@ function create(req, res, next) {
     console.log("write Stream Closed")
   });
 */
-  var s3 = new aws.S3();
   const s3Params = {
     Bucket: S3_BUCKET,
     Key: req.body.s3_key};
@@ -109,25 +109,29 @@ function update(req, res, next){
 
 //make sure authenticatedUser is uploader
 function destroy(req, res, next){
-  Song.findByIdAndRemove(req.params.id, function(err){
+  Song.findById(req.params.id, function(err, song){
     if (err) return console.log(err)
     res.sendStatus(204)
-  })
-  var params = {
-    localFile: req.params.localAddress,
-    s3Params: {
-      Bucket: "mp3playground",
-      Key: req.params.title
+
+    var params = {
+      localFile: req.params.localAddress,
+      s3Params: {
+        Bucket: "mp3playground",
+        Key: req.params.title
+      }
     }
-  }
-  var uploader = client.deleteObjects(params);
-    uploader.on('error', function(err) {
-    console.error("unable to delete:", err.stack);
+    var uploader = s3.deleteObjects(params);
+      uploader.on('error', function(err) {
+      console.error("unable to delete:", err.stack);
+        });
+      uploader.on('progress', function() {
+      console.log("progress", uploader.progressMd5Amount, uploader.progressAmount, uploader.progressTotal);
+        });
+      uploader.on('end', function() {
+      console.log("done deleting");
       });
-    uploader.on('progress', function() {
-    console.log("progress", uploader.progressMd5Amount, uploader.progressAmount, uploader.progressTotal);
-      });
-    uploader.on('end', function() {
-    console.log("done deleting");
-    });
+
+
+  })
+
 }
