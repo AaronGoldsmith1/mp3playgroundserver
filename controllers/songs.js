@@ -2,12 +2,12 @@ var User        = require('../models/User');
 var _           = require('lodash');
 var mongoose    = require('mongoose');
 var Song        = require('../models/Song');
-var mp3Duration = require('mp3-duration');
 var aws         = require('aws-sdk');
 var mm          = require('musicmetadata');
 var fs          = require('fs');
 var S3_BUCKET   = "mp3playground";
 var s3          = new aws.S3();
+
 
 
 module.exports = {
@@ -55,18 +55,13 @@ function signS3(req, res, next){
 
 function create(req, res, next) {
 
-/*
-  var file = fs.createWriteStream("test.mp4");
-  file.on("close", function(){
-    console.log("write Stream Closed")
-  });
-*/
+
   const s3Params = {
     Bucket: S3_BUCKET,
     Key: req.body.s3_key};
 
   var s3Stream = s3.getObject(s3Params).createReadStream()
-  var parser = mm(s3Stream, function (err, metadata) {
+  var parser = mm(s3Stream, {duration: true}, function (err, metadata) {
     if (err) return console.log(err);
 
     var song = {
@@ -75,11 +70,12 @@ function create(req, res, next) {
       uploader: req.decoded._id,
       url: req.body.url,
       s3_key: req.body.s3_key,
-      length: 1000
+      duration: metadata.duration
     };
 
+
+
     console.log(metadata);
-    //res.json(metadata);
 
     Song.create(song, function(err, song) {
       if (err) return console.log(err)
@@ -128,7 +124,4 @@ function destroy(req, res, next){
       })
     });
   })
-
-
-
 }
