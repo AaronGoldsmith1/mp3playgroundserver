@@ -19,6 +19,7 @@ module.exports = {
   destroy: destroy
 }
 
+//return all songs in the database
 function index (req, res, next) {
   Song.find({}, function(err, songs){
     if (err) return console.log(err)
@@ -51,10 +52,7 @@ function signS3(req, res, next){
   });
 }
 
-
-
 function create(req, res, next) {
-
 
   const s3Params = {
     Bucket: S3_BUCKET,
@@ -72,10 +70,7 @@ function create(req, res, next) {
       s3_key: req.body.s3_key,
       duration: metadata.duration
     };
-
-
-
-    console.log(metadata);
+      console.log(metadata);
 
     Song.create(song, function(err, song) {
       if (err) return console.log(err)
@@ -95,22 +90,25 @@ function show(req, res, next){
   })
 };
 
-function update(req, res, next){
-  Song.findByIdAndUpdate(req.params.id, req.body, {
-    new: true, safe: true },
-    function(err, song){
-    if (err) return console.log(err)
-    res.json(song)
-  })
-};
+// function update(req, res, next){
+//   Song.findByIdAndUpdate(req.params.id, req.body, {
+//     new: true, safe: true },
+//     function(err, song){
+//     if (err) return console.log(err)
+//     res.json(song)
+//   })
+// };
 
 //make sure authenticatedUser is uploader
 function destroy(req, res, next){
   Song.findById(req.params.id, function(err, song){
     if (err) return console.log(err)
+      if (songs.uploader != req.decoded._id) {
+          return res.status(401).json({message: "not authorized!"})
 
+      }
 
-    var s3Params = {
+      var s3Params = {
       Bucket: "mp3playground",
       Key: song.s3_key
     }
